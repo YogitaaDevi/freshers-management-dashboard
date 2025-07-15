@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { CreateEmployeeInput } from '@/types'
+import { hashPassword } from '@/lib/auth'
 
 export async function GET() {
   try {
     const employees = await prisma.employee.findMany({
       orderBy: {
         createdAt: 'desc'
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isAdmin: true,
+        createdAt: true,
+        updatedAt: true,
+        // Exclude password for security
       }
     })
     
@@ -25,35 +35,44 @@ export async function POST(request: NextRequest) {
     const body: CreateEmployeeInput = await request.json()
     
     // Validate required fields
-    if (!body.employeeId || !body.name) {
+    if (!body.name || !body.email || !body.password) {
       return NextResponse.json(
-        { error: 'Employee ID and name are required' },
+        { error: 'Name, email, and password are required' },
         { status: 400 }
       )
     }
     
-    // Check if employee ID already exists
+    // Check if email already exists
     const existingEmployee = await prisma.employee.findUnique({
-      where: { employeeId: body.employeeId }
+      where: { email: body.email }
     })
     
     if (existingEmployee) {
       return NextResponse.json(
-        { error: 'Employee ID already exists' },
+        { error: 'Email already exists' },
         { status: 409 }
       )
     }
     
+    // Hash password
+    const hashedPassword = await hashPassword(body.password)
+    
     // Create new employee
     const employee = await prisma.employee.create({
       data: {
-        employeeId: body.employeeId,
         name: body.name,
-        attitude: body.attitude || 0,
-        smartness: body.smartness || 0,
-        productivity: body.productivity || 0,
-        communication: body.communication || 0,
-        teamwork: body.teamwork || 0,
+        email: body.email,
+        password: hashedPassword,
+        isAdmin: body.isAdmin || false,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isAdmin: true,
+        createdAt: true,
+        updatedAt: true,
+        // Exclude password for security
       }
     })
     

@@ -1,60 +1,56 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { Employee } from '@/types'
 
 export async function GET() {
   try {
-    // Get all employees
-    const employees = await prisma.employee.findMany()
+    // Get counts
+    const totalEmployees = await prisma.employee.count()
+    const totalAssessments = await prisma.assessment.count()
+    const totalParameters = await prisma.parameter.count()
     
-    if (employees.length === 0) {
-      return NextResponse.json({
-        totalEmployees: 0,
-        averageAttitude: 0,
-        averageSmartness: 0,
-        averageProductivity: 0,
-        averageCommunication: 0,
-        averageTeamwork: 0,
-        topPerformers: []
-      })
-    }
+    // Get average score from assessment results
+    const assessmentResults = await prisma.assessmentResult.findMany()
+    const averageScore = assessmentResults.length > 0 
+      ? Math.round(assessmentResults.reduce((sum: number, result: any) => sum + result.overallScore, 0) / assessmentResults.length * 10) / 10
+      : 0
     
-    // Calculate averages
-    const totalEmployees = employees.length
-    const averageAttitude = Math.round(
-      employees.reduce((sum: number, emp: Employee) => sum + emp.attitude, 0) / totalEmployees
-    )
-    const averageSmartness = Math.round(
-      employees.reduce((sum: number, emp: Employee) => sum + emp.smartness, 0) / totalEmployees
-    )
-    const averageProductivity = Math.round(
-      employees.reduce((sum: number, emp: Employee) => sum + emp.productivity, 0) / totalEmployees
-    )
-    const averageCommunication = Math.round(
-      employees.reduce((sum: number, emp: Employee) => sum + emp.communication, 0) / totalEmployees
-    )
-    const averageTeamwork = Math.round(
-      employees.reduce((sum: number, emp: Employee) => sum + emp.teamwork, 0) / totalEmployees
-    )
+    // Get top performers (employees with highest average scores)
+    const employeeScores = await prisma.assessmentResult.groupBy({
+      by: ['employeeId'],
+      _avg: {
+        overallScore: true
+      },
+      _count: {
+        overallScore: true
+      }
+    })
     
-    // Get top performers (employees with highest overall score)
-    const topPerformers = employees
-      .map((emp: Employee) => ({
-        ...emp,
-        overallScore: (emp.attitude + emp.smartness + emp.productivity + emp.communication + emp.teamwork) / 5
-      }))
-      .sort((a: Employee & { overallScore: number }, b: Employee & { overallScore: number }) => b.overallScore - a.overallScore)
-      .slice(0, 5)
-      .map(({ overallScore, ...emp }: Employee & { overallScore: number }) => emp)
+    const topPerformers = await Promise.all(
+      employeeScores
+        .sort((a: any, b: any) => (b._avg.overallScore || 0) - (a._avg.overallScore || 0))
+        .slice(0, 5)
+        .map(async (score: any) => {
+          const employee = await prisma.employee.findUnique({
+            where: { id: score.employeeId },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              isAdmin: true,
+              createdAt: true,
+              updatedAt: true,
+            }
+          })
+          return employee
+        })
+    )
     
     return NextResponse.json({
       totalEmployees,
-      averageAttitude,
-      averageSmartness,
-      averageProductivity,
-      averageCommunication,
-      averageTeamwork,
-      topPerformers
+      totalAssessments,
+      totalParameters,
+      averageScore,
+      topPerformers: topPerformers.filter(Boolean)
     })
   } catch (error) {
     console.error('Error fetching employee stats:', error)
