@@ -67,22 +67,97 @@ A comprehensive Next.js application for managing freshers with both frontend and
 
 ## Database Schema
 
-The application uses the following Employee model:
+The application uses the following models:
 
+### Employee
 ```prisma
 model Employee {
-  id           String   @id @default(cuid())
-  employeeId   String   @unique
-  name         String
-  attitude     Int      @default(0) // Rating from 1-10
-  smartness    Int      @default(0) // Rating from 1-10
-  productivity Int      @default(0) // Rating from 1-10
-  communication Int     @default(0) // Rating from 1-10
-  teamwork     Int      @default(0) // Rating from 1-10
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String   // encrypted password
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  employeeParameters EmployeeParameter[]
+  assessmentResults  AssessmentResult[]
+
+  @@map("employees")
+}
+```
+
+### Parameter
+```prisma
+model Parameter {
+  id                 String   @id @default(cuid())
+  attitude           Boolean  @default(true)  // mandatory
+  technicalSkill     Boolean  @default(true)  // mandatory
+  communication      Boolean  @default(true)  // mandatory
+  teamwork           Boolean  @default(false) // optional
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  employeeParameters EmployeeParameter[]
+  assessmentResults  AssessmentResult[]
+
+  @@map("parameters")
+}
+```
+
+### Assessment
+```prisma
+model Assessment {
+  id        String   @id @default(cuid())
+  topic     String
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  assessmentResults AssessmentResult[]
+
+  @@map("assessments")
+}
+```
+
+### AssessmentResult
+```prisma
+model AssessmentResult {
+  id           String  @id @default(cuid())
+  employeeId   String
+  assessmentId String
+  parameterId  String
+  overallScore Float
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  @@map("employees")
+  // Relations
+  employee   Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  parameter  Parameter  @relation(fields: [parameterId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, assessmentId, parameterId])
+  @@map("assessment_results")
+}
+```
+
+### EmployeeParameter (Many-to-Many Relationship)
+```prisma
+model EmployeeParameter {
+  id          String   @id @default(cuid())
+  employeeId  String
+  parameterId String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  employee  Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  parameter Parameter @relation(fields: [parameterId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, parameterId])
+  @@map("employee_parameters")
 }
 ```
 
@@ -94,6 +169,18 @@ model Employee {
 - `GET /api/employees/[id]` - Get employee by ID
 - `PUT /api/employees/[id]` - Update employee
 - `DELETE /api/employees/[id]` - Delete employee
+
+### Parameters
+- `GET /api/parameters` - Get all parameters
+- `POST /api/parameters` - Create a new parameter
+
+### Assessments
+- `GET /api/assessments` - Get all assessments
+- `POST /api/assessments` - Create a new assessment
+
+### Assessment Results
+- `GET /api/assessment-results` - Get all assessment results
+- `POST /api/assessment-results` - Create a new assessment result
 
 ### Statistics
 - `GET /api/employees/stats` - Get employee statistics and analytics

@@ -14,16 +14,78 @@ datasource db {
 }
 
 model Employee {
-  id           String   @id @default(cuid())
-  employeeId   String   @unique
-  name         String
-  attitude     Int      @default(0) // Rating from 1-10
-  smartness    Int      @default(0) // Rating from 1-10
-  productivity Int      @default(0) // Rating from 1-10
-  communication Int     @default(0) // Rating from 1-10
-  teamwork     Int      @default(0) // Rating from 1-10
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String   // encrypted password
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  employeeParameters EmployeeParameter[]
+  assessmentResults  AssessmentResult[]
+
+  @@map("employees")
+}
+
+model Parameter {
+  id                 String   @id @default(cuid())
+  attitude           Boolean  @default(true)  // mandatory
+  technicalSkill     Boolean  @default(true)  // mandatory
+  communication      Boolean  @default(true)  // mandatory
+  teamwork           Boolean  @default(false) // optional
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  employeeParameters EmployeeParameter[]
+  assessmentResults  AssessmentResult[]
+
+  @@map("parameters")
+}
+
+model EmployeeParameter {
+  id          String   @id @default(cuid())
+  employeeId  String
+  parameterId String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  employee  Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  parameter Parameter @relation(fields: [parameterId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, parameterId])
+  @@map("employee_parameters")
+}
+
+model Assessment {
+  id        String   @id @default(cuid())
+  topic     String
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  assessmentResults AssessmentResult[]
+
+  @@map("assessments")
+}
+
+model AssessmentResult {
+  id           String  @id @default(cuid())
+  employeeId   String
+  assessmentId String
+  parameterId  String
+  overallScore Float
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  @@map("employees")
+  // Relations
+  employee   Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  parameter  Parameter  @relation(fields: [parameterId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, assessmentId, parameterId])
+  @@map("assessment_results")
 }

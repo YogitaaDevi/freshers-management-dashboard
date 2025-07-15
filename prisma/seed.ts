@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -6,64 +7,60 @@ async function main() {
   console.log('🌱 Seeding database...')
 
   // Clear existing data
+  await prisma.assessmentResult.deleteMany()
+  await prisma.employeeParameter.deleteMany()
+  await prisma.assessment.deleteMany()
+  await prisma.parameter.deleteMany()
   await prisma.employee.deleteMany()
+
+  // Create admin user (madan)
+  const hashedPassword = await bcrypt.hash('1234', 12)
+  const adminUser = await prisma.employee.create({
+    data: {
+      name: 'madan',
+      email: 'madan@yopmail.com',
+      password: hashedPassword,
+      isAdmin: true,
+    },
+  })
 
   // Create sample employees
   const employees = [
     {
-      employeeId: 'EMP001',
       name: 'John Doe',
-      attitude: 8,
-      smartness: 9,
-      productivity: 8,
-      communication: 7,
-      teamwork: 9,
+      email: 'john.doe@example.com',
+      password: await bcrypt.hash('password123', 12),
+      isAdmin: false,
     },
     {
-      employeeId: 'EMP002',
       name: 'Jane Smith',
-      attitude: 9,
-      smartness: 8,
-      productivity: 9,
-      communication: 8,
-      teamwork: 7,
+      email: 'jane.smith@example.com',
+      password: await bcrypt.hash('password123', 12),
+      isAdmin: false,
     },
     {
-      employeeId: 'EMP003',
       name: 'Mike Johnson',
-      attitude: 7,
-      smartness: 7,
-      productivity: 8,
-      communication: 6,
-      teamwork: 8,
-    },
-    {
-      employeeId: 'EMP004',
-      name: 'Sarah Wilson',
-      attitude: 8,
-      smartness: 9,
-      productivity: 7,
-      communication: 9,
-      teamwork: 8,
-    },
-    {
-      employeeId: 'EMP005',
-      name: 'David Brown',
-      attitude: 6,
-      smartness: 8,
-      productivity: 6,
-      communication: 7,
-      teamwork: 6,
+      email: 'mike.johnson@example.com',
+      password: await bcrypt.hash('password123', 12),
+      isAdmin: false,
     },
   ]
 
+  const createdEmployees = []
   for (const employee of employees) {
-    await prisma.employee.create({
+    const created = await prisma.employee.create({
       data: employee,
     })
+    createdEmployees.push(created)
   }
 
   console.log('✅ Database seeded successfully!')
+  console.log(`👤 Admin user created: ${adminUser.email}`)
+  console.log(`👥 ${createdEmployees.length} employees created`)
+  console.log(`📊 Parameters table: Empty (to be created via application)`)
+  console.log(`📝 Assessments table: Empty (to be created via application)`)
+  console.log(`🔗 Employee-Parameter relationships: Empty (to be created via application)`)
+  console.log(`📊 Assessment Results: Empty (to be created via application)`)
 }
 
 main()
