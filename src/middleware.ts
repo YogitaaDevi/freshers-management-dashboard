@@ -8,73 +8,110 @@ const publicRoutes = [
   '/api/auth/admin-login',
   '/api/signin',
   '/api/health',
+  '/api/auth/verify',
+  '/api/test-token',
+  '/test',
+  '/login',
+  '/',
 ]
 
-export function middleware(request: NextRequest) {
+// Define protected routes that require authentication
+const protectedRoutes = [
+  '/dashboard',
+  '/api/employees',
+  '/api/assessments',
+  '/api/parameters',
+]
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  console.log('🔍 Middleware called for path:', pathname)
 
   // Allow public routes without authentication
   if (publicRoutes.some(route => pathname.startsWith(route))) {
+    console.log('✅ Public route, allowing access')
     return NextResponse.next()
   }
 
-  // Check if it's an API route that needs authentication
-  if (pathname.startsWith('/api/')) {
-    const authHeader = request.headers.get('authorization')
+  // Check if it's a protected route
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
+  console.log('🛡️ Is protected route:', isProtectedRoute)
 
-    // Check if Authorization header is present
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { 
-          error: 'Unauthorized',
-          message: 'Missing or invalid token' 
-        },
-        { status: 401 }
-      )
-    }
+  if (isProtectedRoute) {
+    // For API routes, check Authorization header
+    if (pathname.startsWith('/api/')) {
+      console.log('🔐 Processing API route:', pathname)
+      const authHeader = request.headers.get('authorization')
+      console.log('🔑 Auth header present:', !!authHeader)
 
-    const token = authHeader.split(' ')[1]
+      // Check if Authorization header is present
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('❌ No valid auth header found')
+        return NextResponse.json(
+          { 
+            error: 'Unauthorized',
+            message: 'Missing or invalid token' 
+          },
+          { status: 401 }
+        )
+      }
 
-    try {
-      // Verify JWT token
-      const decoded = verifyToken(token)
-      
-      // Add user info to headers for API routes to access
-      const requestHeaders = new Headers(request.headers)
-      requestHeaders.set('x-user-id', decoded.userId)
-      requestHeaders.set('x-user-email', decoded.email)
-      requestHeaders.set('x-user-is-admin', decoded.isAdmin.toString())
-      requestHeaders.set('x-user-name', decoded.name)
+      const token = authHeader.split(' ')[1]
+      console.log('🎫 Token extracted, length:', token.length)
 
-      return NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      })
-    } catch (error) {
-      return NextResponse.json(
-        { 
-          error: 'Unauthorized',
-          message: 'Invalid or expired token' 
-        },
-        { status: 401 }
-      )
+      try {
+        // Verify JWT token
+        const decoded = await verifyToken(token)
+        console.log('✅ Token verified successfully:', decoded)
+        
+        // Add user info to headers for API routes to access
+        const requestHeaders = new Headers(request.headers)
+        requestHeaders.set('x-user-id', decoded.userId)
+        requestHeaders.set('x-user-email', decoded.email)
+        requestHeaders.set('x-user-is-admin', decoded.isAdmin.toString())
+        requestHeaders.set('x-user-name', decoded.name)
+
+        console.log('📋 Headers set, proceeding with request')
+        console.log('📋 Headers set:', {
+          'x-user-id': decoded.userId,
+          'x-user-email': decoded.email,
+          'x-user-is-admin': decoded.isAdmin.toString(),
+          'x-user-name': decoded.name
+        })
+
+        return NextResponse.next({
+          request: {
+            headers: requestHeaders,
+          },
+        })
+      } catch (error) {
+        console.log('❌ Token verification failed:', error)
+        return NextResponse.json(
+          { 
+            error: 'Unauthorized',
+            message: 'Invalid or expired token' 
+          },
+          { status: 401 }
+        )
+      }
+    } else {
+      // For non-API protected routes (like dashboard), redirect to login if no token
+      // Note: We can't access rage in middleware, so we'll let the client-side handle this
+      // The Layout component will handle the authentication check
+      console.log('🌐 Non-API protected route, letting client handle auth')
+      return NextResponse.next()
     }
   }
 
-  // For non-API routes, continue normally
+  // For non-protected routes, continue normally
+  console.log('➡️ Non-protected route, allowing access')
   return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!_next/static|_next/image|favicon.ico|public).*)',
+    '/api/:path*',
+    '/dashboard/:path*',
+    '/dashboard',
   ],
 } 

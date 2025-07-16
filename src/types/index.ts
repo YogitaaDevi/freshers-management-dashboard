@@ -24,19 +24,19 @@ export interface UpdateEmployeeInput {
 
 export interface Parameter {
   id: string
-  attitude: boolean
-  technicalSkill: boolean
-  communication: boolean
-  teamwork: boolean
+  attitude: number | null
+  technicalSkill: number | null
+  communication: number | null
+  teamwork: number | null
   createdAt: Date
   updatedAt: Date
 }
 
 export interface CreateParameterInput {
-  attitude?: boolean
-  technicalSkill?: boolean
-  communication?: boolean
-  teamwork?: boolean
+  attitude: number
+  technicalSkill: number
+  communication: number
+  teamwork: number
 }
 
 export interface Assessment {
@@ -82,4 +82,36 @@ export interface EmployeeStats {
   totalParameters: number
   averageScore: number
   topPerformers: Employee[]
-} 
+}
+
+// New interface for comprehensive assessment submission
+export interface AssessmentSubmissionInput {
+  assessmentId?: string  // Optional: if provided, update existing assessment
+  topic: string
+  date: Date
+  employeeId: string
+  parameters: {
+    attitude: number
+    technicalSkill: number
+    communication: number
+    teamwork: number
+  }
+}
+
+export interface AssessmentSubmissionResponse {
+  success: boolean
+  message: string
+  data: {
+    assessment: Assessment
+    parameter: Parameter
+    assessmentResult: AssessmentResult
+  }
+}
+
+// Frontend Employee interface (without sensitive data)
+export interface EmployeeForFrontend {
+  id: string
+  name: string
+  email: string
+  isAdmin: boolean
+}
