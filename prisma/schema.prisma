@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -30,13 +27,13 @@ model Employee {
 }
 
 model Parameter {
-  id                 String   @id @default(cuid())
-  attitude           Boolean  @default(true)  // mandatory
-  technicalSkill     Boolean  @default(true)  // mandatory
-  communication      Boolean  @default(true)  // mandatory
-  teamwork           Boolean  @default(false) // optional
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id             String   @id @default(cuid())
+  attitude       Int?     // Score 0-10, mandatory but can be null initially
+  technicalSkill Int?     // Score 0-10, mandatory but can be null initially
+  communication  Int?     // Score 0-10, mandatory but can be null initially
+  teamwork       Int?     // Score 0-10, mandatory but can be null initially
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Relations
   employeeParameters EmployeeParameter[]

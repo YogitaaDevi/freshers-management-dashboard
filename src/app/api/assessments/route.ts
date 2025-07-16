@@ -1,10 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { CreateAssessmentInput } from '@/types'
+import { requireAuth } from '@/lib/auth-utils'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Verify authentication
+    const user = requireAuth(request)
+    
     const assessments = await prisma.assessment.findMany({
+      include: {
+        assessmentResults: {
+          include: {
+            employee: {
+              select: {
+                id: true,
+                name: true,
+                email: true
+              }
+            },
+            parameter: true
+          }
+        }
+      },
       orderBy: {
         date: 'desc'
       }
