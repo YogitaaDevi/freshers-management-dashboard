@@ -40,11 +40,11 @@ export interface CreateParameterInput {
 }
 
 export interface Assessment {
-  id: string
-  topic: string
-  date: Date
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  topic: string;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateAssessmentInput {
@@ -53,13 +53,13 @@ export interface CreateAssessmentInput {
 }
 
 export interface AssessmentResult {
-  id: string
-  employeeId: string
-  assessmentId: string
-  parameterId: string
-  overallScore: number
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  employeeId: string;
+  assessmentId: string;
+  parameterId: string;
+  overallScore: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateAssessmentResultInput {
@@ -70,10 +70,10 @@ export interface CreateAssessmentResultInput {
 }
 
 export interface EmployeeParameter {
-  id: string
-  employeeId: string
-  parameterId: string
-  createdAt: Date
+  id: string;
+  employeeId: string;
+  parameterId: string;
+  createdAt: string;
 }
 
 export interface EmployeeStats {
