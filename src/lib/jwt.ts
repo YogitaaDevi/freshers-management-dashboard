@@ -28,9 +28,7 @@ function base64UrlToArrayBuffer(base64url: string): ArrayBuffer {
 
 // Simple token validation without signature verification
 export async function verifyToken(token: string): Promise<JWTPayload> {
-  try {
-    console.log('Verifying token', token)
-    
+  try {    
     const parts = token.split('.')
     if (parts.length !== 3) {
       throw new Error('Invalid token format')

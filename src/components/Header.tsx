@@ -40,7 +40,7 @@ export default function Header({ user }: HeaderProps) {
   }
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 shadow-2xl border-b border-gray-700 backdrop-blur-sm relative z-50">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Brand */}
@@ -48,7 +48,7 @@ export default function Header({ user }: HeaderProps) {
             <div className="flex-shrink-0">
               <div className="flex items-center space-x-3">
                 {/* Logo Icon */}
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg flex items-center justify-center cursor-pointer shadow-lg hover:shadow-cyan-500/25 transition-all duration-300" onClick={() => router.push('/dashboard')}>
                   <svg 
                     className="w-6 h-6 text-white" 
                     fill="none" 
@@ -65,8 +65,8 @@ export default function Header({ user }: HeaderProps) {
                 </div>
                 {/* Brand Name */}
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900">Freshers Management</h1>
-                  <p className="text-sm text-gray-500">Dashboard</p>
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">FreshersHub</h1>
+                  <p className="text-sm text-gray-300">Dashboard</p>
                 </div>
               </div>
             </div>
@@ -76,17 +76,17 @@ export default function Header({ user }: HeaderProps) {
           <div className="relative" ref={profileRef}>
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center space-x-3 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="flex items-center space-x-3 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-900"
             >
               {/* Profile Avatar */}
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
                 <span className="text-white font-medium text-sm">
                   {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                 </span>
               </div>
               {/* Dropdown Arrow */}
               <svg
-                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+                className={`w-4 h-4 text-gray-300 transition-transform duration-200 ${
                   isProfileOpen ? 'rotate-180' : ''
                 }`}
                 fill="none"
@@ -104,13 +104,13 @@ export default function Header({ user }: HeaderProps) {
 
             {/* Profile Dropdown Menu */}
             {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+              <div className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-2xl py-1 z-[9999] border border-gray-700 backdrop-blur-sm">
                 {/* User Info */}
-                <div className="px-4 py-3 border-b border-gray-100">
-                  <p className="text-sm font-medium text-gray-900">
+                <div className="px-4 py-3 border-b border-gray-700">
+                  <p className="text-sm font-medium text-cyan-300">
                     {user?.name || 'User Name'}
                   </p>
-                  <p className="text-sm text-gray-500 truncate">
+                  <p className="text-sm text-gray-400 truncate">
                     {user?.email || 'user@example.com'}
                   </p>
                 </div>
@@ -120,7 +120,7 @@ export default function Header({ user }: HeaderProps) {
                   {/* Logout Button */}
                   <button
                     onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
+                    className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors duration-150"
                   >
                     <svg
                       className="w-4 h-4 mr-3 text-red-400"

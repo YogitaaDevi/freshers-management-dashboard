@@ -10,7 +10,7 @@ function SubmitButton() {
   return (
     <button
       type="submit"
-      className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition disabled:opacity-60 disabled:cursor-not-allowed"
+      className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white py-2 rounded-lg font-semibold shadow-lg hover:from-cyan-400 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-gray-800 transition disabled:opacity-60 disabled:cursor-not-allowed"
       disabled={pending}
     >
       {pending ? 'Logging in...' : 'Login'}
@@ -40,47 +40,53 @@ export default function LoginForm() {
   return (
     <div className="w-full max-w-md">
       <div className="flex flex-col items-center mb-8">
-        <div className="bg-blue-600 rounded-full p-3 mb-2 shadow-lg">
+        <div className="bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full p-3 mb-2 shadow-lg">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="20" cy="20" r="20" fill="#2563EB" />
+            <circle cx="20" cy="20" r="20" fill="url(#gradient)" />
             <text x="50%" y="55%" textAnchor="middle" fill="white" fontSize="18" fontFamily="Arial" dy=".3em">FM</text>
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#06b6d4" />
+                <stop offset="100%" stopColor="#a855f7" />
+              </linearGradient>
+            </defs>
           </svg>
         </div>
-        <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Fresher Management</h1>
-        <p className="text-gray-500 mt-1 text-sm">Sign in to your dashboard</p>
+        <h1 className="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent tracking-tight">FreshersHub</h1>
+        <p className="text-gray-300 mt-1 text-sm">Sign in to your dashboard</p>
       </div>
       <form
-        className="bg-white p-8 rounded-2xl shadow-xl border border-blue-100"
+        className="bg-gray-700 p-8 rounded-2xl shadow-2xl border border-gray-600"
         action={formAction}
       >
         <div className="mb-5">
-          <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="username" className="block text-cyan-300 font-medium mb-2">
             Email
           </label>
           <input
             type="text"
             id="username"
             name="username"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 bg-gray-800 text-gray-100 placeholder-gray-400 transition"
             autoComplete="username"
             required
           />
         </div>
         <div className="mb-6">
-          <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="password" className="block text-cyan-300 font-medium mb-2">
             Password
           </label>
           <input
             type="password"
             id="password"
             name="password"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 bg-gray-800 text-gray-100 placeholder-gray-400 transition"
             autoComplete="current-password"
             required
           />
         </div>
         {formState.error && (
-          <div className="mb-4 text-red-500 text-sm text-center font-medium bg-red-50 border border-red-200 rounded py-2">
+          <div className="mb-4 text-red-400 text-sm text-center font-medium bg-red-900/30 border border-red-700 rounded py-2">
             {formState.error}
           </div>
         )}

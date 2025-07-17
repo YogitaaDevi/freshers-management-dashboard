@@ -6,6 +6,7 @@ import AssessmentForm from '@/components/AssessmentForm'
 import { EmployeeForFrontend } from '@/types'
 import Cookies from 'js-cookie'
 import CommonHeader from '@/components/CommonHeader'
+import Link from 'next/link'
 
 export default function DashboardPage() {
   const [employees, setEmployees] = useState<EmployeeForFrontend[]>([])
@@ -25,7 +26,7 @@ export default function DashboardPage() {
         return
       }
 
-      const response = await fetch('/api/employees/list', {
+      const response = await fetch('/api/employees', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -48,8 +49,8 @@ export default function DashboardPage() {
       <Layout>
         <div className="max-w-7xl  mx-auto px-4 py-8">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading employees...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto"></div>
+            <p className="mt-4 text-cyan-300">Loading employees...</p>
           </div>
         </div>
       </Layout>
@@ -61,11 +62,11 @@ export default function DashboardPage() {
       <Layout>
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="text-center">
-            <div className="bg-red-100 text-red-700 p-4 rounded-md max-w-md mx-auto">
+            <div className="bg-red-900/30 text-red-400 p-4 rounded-md max-w-md mx-auto border border-red-700">
               <p className="font-medium">Error: {error}</p>
               <button 
                 onClick={fetchEmployees}
-                className="mt-2 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                className="mt-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-md hover:from-red-400 hover:to-red-500 transition-all duration-200"
               >
                 Retry
               </button>
@@ -78,7 +79,7 @@ export default function DashboardPage() {
 
   return (
     <Layout>
-      <div className="bg-gradient-to-br from-blue-50 via-white to-blue-100 mx-auto px-4 py-8">
+      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 mx-auto px-4 py-8">
         <CommonHeader title="Assessment Management" subtitle="Submit and manage fresher assessments" />
         <AssessmentForm employees={employees} />
       </div>

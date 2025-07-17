@@ -77,7 +77,7 @@ export default async function DashboardPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
           <DashboardClient tableData={tableData} topics={topics} results={results} />
           {/* Leadership Board Section */}
