@@ -5,6 +5,7 @@ import Layout from '@/components/Layout'
 import AssessmentForm from '@/components/AssessmentForm'
 import { EmployeeForFrontend } from '@/types'
 import Cookies from 'js-cookie'
+import CommonHeader from '@/components/CommonHeader'
 
 export default function DashboardPage() {
   const [employees, setEmployees] = useState<EmployeeForFrontend[]>([])
@@ -78,10 +79,7 @@ export default function DashboardPage() {
   return (
     <Layout>
       <div className="bg-gradient-to-br from-blue-50 via-white to-blue-100 mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-4">Assessment Management</h1>
-          <p className="text-gray-600">Submit and manage fresher assessments</p>
-        </div>
+        <CommonHeader title="Assessment Management" subtitle="Submit and manage fresher assessments" />
         <AssessmentForm employees={employees} />
       </div>
     </Layout>
