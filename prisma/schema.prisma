@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String   // encrypted password
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  employeeParameters EmployeeParameter[]
+  assessmentResults  AssessmentResult[]
+
+  @@map("employees")
+}
+
+model Parameter {
+  id             String   @id @default(cuid())
+  attitude       Int?     // Score 0-10, mandatory but can be null initially
+  technicalSkill Int?     // Score 0-10, mandatory but can be null initially
+  communication  Int?     // Score 0-10, mandatory but can be null initially
+  teamwork       Int?     // Score 0-10, mandatory but can be null initially
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  employeeParameters EmployeeParameter[]
+  assessmentResults  AssessmentResult[]
+
+  @@map("parameters")
+}
+
+model EmployeeParameter {
+  id          String   @id @default(cuid())
+  employeeId  String
+  parameterId String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  employee  Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  parameter Parameter @relation(fields: [parameterId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, parameterId])
+  @@map("employee_parameters")
+}
+
+model Assessment {
+  id        String   @id @default(cuid())
+  topic     String
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  assessmentResults AssessmentResult[]
+
+  @@map("assessments")
+}
+
+model AssessmentResult {
+  id           String  @id @default(cuid())
+  employeeId   String
+  assessmentId String
+  parameterId  String
+  overallScore Float
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  employee   Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  parameter  Parameter  @relation(fields: [parameterId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, assessmentId, parameterId])
+  @@map("assessment_results")
+}

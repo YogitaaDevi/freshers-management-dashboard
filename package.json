@@ -1,0 +1,53 @@
+{
+  "name": "freshers-management-dashboard",
+  "version": "1.0.0",
+  "description": "A comprehensive Next.js application for managing freshers with both frontend and backend functionality",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "keywords": [
+    "nextjs",
+    "dashboard",
+    "freshers",
+    "management",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "autoprefixer": "^10.0.0",
+    "axios": "^1.10.0",
+    "bcryptjs": "^3.0.2",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "next": "^15.4.1",
+    "postcss": "^8.0.0",
+    "prisma": "^6.11.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
+    "@types/next": "^8.0.7",
+    "tsx": "^4.20.3"
+  }
+}
