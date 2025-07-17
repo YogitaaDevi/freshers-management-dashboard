@@ -3,20 +3,18 @@ import { prisma } from '@/lib/prisma'
 import { CreateEmployeeInput } from '@/types'
 import { hashPassword } from '@/lib/auth'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Verify authentication
     const employees = await prisma.employee.findMany({
-      orderBy: {
-        createdAt: 'desc'
-      },
       select: {
         id: true,
         name: true,
         email: true,
-        isAdmin: true,
-        createdAt: true,
-        updatedAt: true,
-        // Exclude password for security
+        isAdmin: true
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
     
@@ -28,7 +26,7 @@ export async function GET() {
       { status: 500 }
     )
   }
-}
+} 
 
 export async function POST(request: NextRequest) {
   try {

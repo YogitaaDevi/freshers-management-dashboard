@@ -44,34 +44,34 @@ const dummyRows: AssessmentRow[] = [
 
 export default function AssessmentTableCard() {
   return (
-    <div className="bg-white rounded-2xl shadow-md border border-blue-100 p-6 w-full mb-8 overflow-x-auto">
-      <h2 className="text-2xl font-bold text-blue-700 mb-4">Assessment Results</h2>
+    <div className="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-6 w-full mb-8 overflow-x-auto backdrop-blur-sm">
+      <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-4">Assessment Results</h2>
       <table className="min-w-full text-sm">
         <thead>
-          <tr className="bg-blue-50">
-            <th className="px-3 py-2 text-left">#</th>
-            <th className="px-3 py-2 text-left">Trainee Name</th>
-            <th className="px-3 py-2 text-left">Java</th>
-            <th className="px-3 py-2 text-left">Spring Boot</th>
-            <th className="px-3 py-2 text-left">Total</th>
-            <th className="px-3 py-2 text-left">Date</th>
-            <th className="px-3 py-2 text-left">Remarks</th>
-            <th className="px-3 py-2 text-left">Actions</th>
+          <tr className="bg-gray-700">
+            <th className="px-3 py-2 text-left text-cyan-300">#</th>
+            <th className="px-3 py-2 text-left text-cyan-300">Trainee Name</th>
+            <th className="px-3 py-2 text-left text-cyan-300">Java</th>
+            <th className="px-3 py-2 text-left text-cyan-300">Spring Boot</th>
+            <th className="px-3 py-2 text-left text-cyan-300">Total</th>
+            <th className="px-3 py-2 text-left text-cyan-300">Date</th>
+            <th className="px-3 py-2 text-left text-cyan-300">Remarks</th>
+            <th className="px-3 py-2 text-left text-cyan-300">Actions</th>
           </tr>
         </thead>
         <tbody>
           {dummyRows.map((row, idx) => (
-            <tr key={row.id} className="border-b last:border-b-0 hover:bg-blue-50">
-              <td className="px-3 py-2 font-medium">{idx + 1}</td>
-              <td className="px-3 py-2">{row.traineeName}</td>
-              <td className="px-3 py-2">{row.java}</td>
-              <td className="px-3 py-2">{row.springBoot}</td>
-              <td className="px-3 py-2">{row.total}</td>
-              <td className="px-3 py-2">{row.date}</td>
-              <td className="px-3 py-2">{row.remarks}</td>
+            <tr key={row.id} className="border-b border-gray-700 last:border-b-0 hover:bg-gray-700">
+              <td className="px-3 py-2 font-medium text-gray-100">{idx + 1}</td>
+              <td className="px-3 py-2 text-gray-100">{row.traineeName}</td>
+              <td className="px-3 py-2 text-gray-300">{row.java}</td>
+              <td className="px-3 py-2 text-gray-300">{row.springBoot}</td>
+              <td className="px-3 py-2 text-cyan-400 font-bold">{row.total}</td>
+              <td className="px-3 py-2 text-gray-300">{row.date}</td>
+              <td className="px-3 py-2 text-gray-300">{row.remarks}</td>
               <td className="px-3 py-2 flex gap-2">
-                <button className="text-blue-600 hover:text-blue-800" title="Edit">✏️</button>
-                <button className="text-blue-600 hover:text-blue-800" title="View">🧾</button>
+                <button className="text-cyan-400 hover:text-cyan-300 transition-colors" title="Edit">✏️</button>
+                <button className="text-purple-400 hover:text-purple-300 transition-colors" title="View">🧾</button>
               </td>
             </tr>
           ))}

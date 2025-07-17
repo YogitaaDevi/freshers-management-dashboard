@@ -40,7 +40,7 @@ export default function TestPage() {
         return
       }
 
-      const response = await fetch('/api/employees/list', {
+      const response = await fetch('/api/employees', {
         headers: {
           'Authorization': `Bearer ${token}`
         }

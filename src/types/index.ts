@@ -28,8 +28,8 @@ export interface Parameter {
   technicalSkill: number | null
   communication: number | null
   teamwork: number | null
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 export interface CreateParameterInput {
@@ -114,4 +114,19 @@ export interface EmployeeForFrontend {
   name: string
   email: string
   isAdmin: boolean
+}
+
+// Enhanced Employee interface with assessments and parameters
+export interface EmployeeWithDetails {
+  id: string
+  name: string
+  email: string
+  isAdmin: boolean
+  createdAt: string
+  updatedAt: string
+  assessmentResults: {
+    overallScore: number
+  }[]
+  parameters: Parameter[]
+  assessment: Assessment[]
 }

@@ -24,12 +24,12 @@ const AssessmentListCard: React.FC<AssessmentListCardProps> = ({ results, topics
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-5xl mx-auto mb-8 border-2 border-blue-200">
+    <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-5xl mx-auto mb-8 border-2 border-gray-700 backdrop-blur-sm">
       <div className="flex items-center justify-between mb-2">
-        <span className="block text-sm font-semibold text-gray-500">Leadership Board</span>
+        <span className="block text-sm font-semibold text-cyan-300">Leadership Board</span>
         <button
           onClick={handleSortToggle}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-600 bg-gray-700 hover:bg-gray-600 text-cyan-300 text-xs font-semibold shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400"
           aria-label="Toggle sort order"
         >
           <svg
@@ -45,28 +45,28 @@ const AssessmentListCard: React.FC<AssessmentListCardProps> = ({ results, topics
         </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-blue-100">
-          <thead className="bg-blue-50">
+        <table className="min-w-full divide-y divide-gray-700">
+          <thead className="bg-gray-700">
             <tr>
-              <th className="px-4 py-2 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">Trainee</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold text-cyan-300 uppercase tracking-wider">Trainee</th>
               {topics.map((topic) => (
-                <th key={topic} className="px-4 py-2 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">{topic}</th>
+                <th key={topic} className="px-4 py-2 text-left text-xs font-semibold text-cyan-300 uppercase tracking-wider">{topic}</th>
               ))}
-              <th className="px-4 py-2 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">Total</th>
-              <th className="px-4 py-2 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">Assigned By</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold text-cyan-300 uppercase tracking-wider">Total</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold text-cyan-300 uppercase tracking-wider">Assigned By</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-blue-50">
+          <tbody className="bg-gray-800 divide-y divide-gray-700">
             {sortedResults.length === 0 ? (
               <tr><td colSpan={topics.length + 3} className="text-center py-4 text-gray-400">No assessment results found.</td></tr>
             ) : sortedResults.map((row, idx) => (
-              <tr key={row.trainee + idx} className="hover:bg-blue-50 transition-colors">
-                <td className="px-4 py-2 text-sm text-blue-900 font-medium">{row.trainee}</td>
+              <tr key={row.trainee + idx} className="hover:bg-gray-700 transition-colors">
+                <td className="px-4 py-2 text-sm text-gray-100 font-medium">{row.trainee}</td>
                 {topics.map((topic) => (
-                  <td key={topic} className="px-4 py-2 text-sm text-blue-900">{row.scores[topic] !== undefined ? row.scores[topic] : '-'}</td>
+                  <td key={topic} className="px-4 py-2 text-sm text-gray-300">{row.scores[topic] !== undefined ? row.scores[topic] : '-'}</td>
                 ))}
-                <td className="px-4 py-2 text-sm text-blue-900 font-bold">{row.total}</td>
-                <td className="px-4 py-2 text-sm text-blue-900">{row.assignedBy}</td>
+                <td className="px-4 py-2 text-sm text-cyan-400 font-bold">{row.total}</td>
+                <td className="px-4 py-2 text-sm text-gray-300">{row.assignedBy}</td>
               </tr>
             ))}
           </tbody>

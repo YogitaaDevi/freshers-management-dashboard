@@ -19,23 +19,99 @@ const publicRoutes = [
 const protectedRoutes = [
   '/dashboard',
   '/api/employees',
-  '/api/assessments',
+  '/api/assessment-form',
   '/api/parameters',
+  '/api/assessment-results',
 ]
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   console.log('🔍 Middleware called for path:', pathname)
 
+  // Check if it's a protected API route
+  if (pathname.startsWith('/api/employees') || 
+      pathname.startsWith('/api/assessments') || 
+      pathname.startsWith('/api/parameters') || 
+      pathname.startsWith('/api/assessment-results')) {
+    
+    console.log('🔐 Processing protected API route:', pathname)
+    const authHeader = request.headers.get('authorization')
+    console.log('🔑 Auth header present:', !!authHeader)
+
+    // Check if Authorization header is present
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('❌ No valid auth header found')
+      return NextResponse.json(
+        { 
+          error: 'Unauthorized',
+          message: 'Missing or invalid token' 
+        },
+        { status: 401 }
+      )
+    }
+
+    const token = authHeader.split(' ')[1]
+    console.log('🎫 Token extracted, length:', token.length)
+
+    try {
+      // Verify JWT token
+      const decoded = await verifyToken(token)
+      console.log('✅ Token verified successfully:', decoded)
+      
+      // Add user info to headers for API routes to access
+      const requestHeaders = new Headers(request.headers)
+      requestHeaders.set('x-user-id', decoded.userId)
+      requestHeaders.set('x-user-email', decoded.email)
+      requestHeaders.set('x-user-is-admin', decoded.isAdmin.toString())
+      requestHeaders.set('x-user-name', decoded.name)
+
+      console.log('📋 Headers set, proceeding with request')
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      })
+    } catch (error) {
+      console.log('❌ Token verification failed:', error)
+      return NextResponse.json(
+        { 
+          error: 'Unauthorized',
+          message: 'Invalid or expired token' 
+        },
+        { status: 401 }
+      )
+    }
+  }
+
   // Allow public routes without authentication
-  if (publicRoutes.some(route => pathname.startsWith(route))) {
+  const isPublicRoute = publicRoutes.some(route => {
+    // For exact matches
+    if (pathname === route) return true
+    // For routes that should match subpaths (like /api/auth/*)
+    if (route.startsWith('/api/auth/') && pathname.startsWith(route)) return true
+    // For other public routes
+    if (pathname.startsWith(route)) return true
+    return false
+  })
+  
+  console.log('🔍 Checking public routes:', { pathname, publicRoutes, isPublicRoute })
+  
+  if (isPublicRoute) {
     console.log('✅ Public route, allowing access')
     return NextResponse.next()
   }
 
-  // Check if it's a protected route
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
-  console.log('🛡️ Is protected route:', isProtectedRoute)
+  // Check if it's a protected route (more comprehensive matching)
+  const isProtectedRoute = protectedRoutes.some(route => {
+    // For exact matches
+    if (pathname === route) return true
+    // For API routes with parameters (like /api/employees/[id])
+    if (route.startsWith('/api/') && pathname.startsWith(route)) return true
+    // For dashboard routes
+    if (route === '/dashboard' && pathname.startsWith('/dashboard')) return true
+    return false
+  })
+  console.log('🛡️ Checking protected routes:', { pathname, protectedRoutes, isProtectedRoute })
 
   if (isProtectedRoute) {
     // For API routes, check Authorization header
@@ -110,8 +186,13 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/api/:path*',
-    '/dashboard/:path*',
-    '/dashboard',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!_next/static|_next/image|favicon.ico|public).*)',
   ],
 } 
