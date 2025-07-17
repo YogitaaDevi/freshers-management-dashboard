@@ -1,14 +1,20 @@
+'use client';
+
 import React from "react";
+import { useRouter } from "next/navigation";
 
 const FreshersListCard: React.FC = () => {
+  const router = useRouter();
   return (
     <div
-      className="bg-white rounded-2xl shadow-md border border-blue-100 p-6 w-full max-w-xs min-w-[220px] flex flex-col items-center justify-center cursor-pointer hover:shadow-xl transition"
+      className="bg-gradient-to-br from-blue-100 via-white to-blue-200 rounded-2xl shadow-md border border-blue-100 p-6 w-full max-w-xs min-w-[220px] flex flex-col items-center justify-center cursor-pointer hover:shadow-xl transition"
       tabIndex={0}
       role="button"
       aria-label="View Freshers"
+      onClick={() => router.push('/dashboard/freshers')}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') router.push('/dashboard/freshers'); }}
     >
-      <div className="bg-gradient-to-br from-blue-400 to-blue-700 text-white rounded-full w-12 h-12 flex items-center justify-center mb-3 text-2xl font-bold shadow">
+      <div className="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center mb-3 text-2xl font-bold shadow">
         {/* User/Group Icon */}
         <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
